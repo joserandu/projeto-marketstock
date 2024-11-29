@@ -1,1 +1,1 @@
-# Projeto MarketStock 🟩🔴
+# Projeto MarketStock 🟩 🔴
