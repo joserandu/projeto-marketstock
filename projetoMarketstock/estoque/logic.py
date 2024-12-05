@@ -51,7 +51,7 @@ def main(produto):
         i += 1
         time.sleep(1)
     
-print("Vendas realizadas:", lista_vendas)
+    print("Vendas realizadas:", lista_vendas)
 
 produto = Produto("Paçoca", 20, "20/12/2024")
 main(produto)  # Agora a função main pode ser chamada para executar a simulação
