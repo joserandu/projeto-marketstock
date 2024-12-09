@@ -3,14 +3,26 @@ from .models import Fornecedor, Produto, Usuario, Movimentacao, PrevisaoEscassez
 
 
 class FornecedorAdmin(admin.ModelAdmin):
+    """
+    Essas funções dessa classe não serão utilizadas nesse momento pois elas são facilmente controladas na área
+    administrativa do django, que é nosso foco antes de inserí-las no dashboard HTML.
+    """
     list_display = ('nome', 'contato')
 
 
 class ProdutoAdmin(admin.ModelAdmin):
+    """
+    As funções dessa classe também não serão descritas aqui pois elas são facilmente manipuladas na área
+    administrativa do django.
+        - Obs: Para pesquisar um produto, tecle Ctrl + F
+    """
     list_display = ('nome', 'qttd_estoque', 'validade', 'marca', 'fornecedor')
 
 
 class UsuarioAdmin(admin.ModelAdmin):
+    """
+    As funções estão no admin do django.
+    """
     list_display = ('nome', 'cargo')
 
 

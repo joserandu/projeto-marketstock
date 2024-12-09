@@ -19,8 +19,8 @@ class Fornecedor(models.Model):
         """
         Altera os dados do fornecedor.
 
-        :param novo_nome: Novo nome do fornecedor.
-        :param novo_contato: Novo contato do fornecedor.
+        novo_nome: Novo nome do fornecedor.
+        novo_contato: Novo contato do fornecedor.
         """
         self.nome = novo_nome
         self.contato = novo_contato
@@ -53,8 +53,8 @@ class Produto(models.Model):
         """
         Busca um produto pelo nome.
 
-        :param nome: Nome do produto.
-        :return: Instância do produto se encontrado, caso contrário None.
+        nome: Nome do produto.
+            - Instância do produto se encontrado, caso contrário None.
         """
         try:
             return Produto.objects.get(nome=nome)
@@ -66,11 +66,11 @@ class Produto(models.Model):
         """
         Altera os dados do produto.
 
-        :param novo_nome: Novo nome do produto (opcional).
-        :param nova_qttd_estoque: Nova quantidade em estoque (opcional).
-        :param nova_validade: Nova data de validade (opcional).
-        :param nova_marca: Nova marca do produto (opcional).
-        :param novo_fornecedor: Novo fornecedor do produto (opcional).
+        novo_nome: Novo nome do produto (opcional).
+        nova_qttd_estoque: Nova quantidade em estoque (opcional).
+        nova_validade: Nova data de validade (opcional).
+        nova_marca: Nova marca do produto (opcional).
+        novo_fornecedor: Novo fornecedor do produto (opcional).
         """
         if novo_nome:
             self.nome = novo_nome
@@ -124,8 +124,7 @@ class Movimentacao(models.Model):
     def obter_relatorio(self):
         """
         Gera um relatório das movimentações de produtos.
-
-        :return: QuerySet contendo todas as movimentações.
+        QuerySet contendo todas as movimentações.
         """
         return Movimentacao.objects.all()
 
@@ -137,8 +136,7 @@ class PrevisaoEscassez(models.Model):
     def obter_previsao(self):
         """
         Obtém a previsão de escassez do produto.
-
-        :return: Data prevista para a escassez do produto.
+        Data prevista para a escassez do produto.
         """
         # Essa variável vai receber a média de vendas de um determinado produto por dia.
         taxa_consumo_diario = 80  # Exemplo: 80 unidade por dia
