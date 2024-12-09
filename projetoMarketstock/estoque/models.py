@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 
 class Fornecedor(models.Model):
     nome = models.CharField(max_length=100)
@@ -8,13 +10,27 @@ class Fornecedor(models.Model):
         return self.nome
 
     def criar_fornecedor(self):
-        pass
+        """
+        Cria um novo fornecedor no sistema.
+        """
+        self.save()
 
-    def alterar_fornecedor(self):
-        pass
+    def alterar_fornecedor(self, novo_nome, novo_contato):
+        """
+        Altera os dados do fornecedor.
+
+        :param novo_nome: Novo nome do fornecedor.
+        :param novo_contato: Novo contato do fornecedor.
+        """
+        self.nome = novo_nome
+        self.contato = novo_contato
+        self.save()
 
     def excluir_fornecedor(self):
-        pass
+        """
+        Exclui o fornecedor do sistema.
+        """
+        self.delete()
 
 
 class Produto(models.Model):
@@ -28,13 +44,45 @@ class Produto(models.Model):
         return self.nome
 
     def criar_produto(self):
-        pass
+        """
+        Cria um novo produto no sistema.
+        """
+        self.save()
 
-    def buscar_produto(self):
-        pass
+    def buscar_produto(self, nome):
+        """
+        Busca um produto pelo nome.
 
-    def alternar_produto(self):
-        pass
+        :param nome: Nome do produto.
+        :return: Instância do produto se encontrado, caso contrário None.
+        """
+        try:
+            return Produto.objects.get(nome=nome)
+        except Produto.DoesNotExist:
+            return None
+
+    def alterar_produto(self, novo_nome=None, nova_qttd_estoque=None, nova_validade=None, nova_marca=None,
+                        novo_fornecedor=None):
+        """
+        Altera os dados do produto.
+
+        :param novo_nome: Novo nome do produto (opcional).
+        :param nova_qttd_estoque: Nova quantidade em estoque (opcional).
+        :param nova_validade: Nova data de validade (opcional).
+        :param nova_marca: Nova marca do produto (opcional).
+        :param novo_fornecedor: Novo fornecedor do produto (opcional).
+        """
+        if novo_nome:
+            self.nome = novo_nome
+        if nova_qttd_estoque is not None:
+            self.qttd_estoque = nova_qttd_estoque
+        if nova_validade:
+            self.validade = nova_validade
+        if nova_marca:
+            self.marca = nova_marca
+        if novo_fornecedor:
+            self.fornecedor = novo_fornecedor
+        self.save()
 
 
 class Usuario(models.Model):
@@ -45,23 +93,41 @@ class Usuario(models.Model):
         return self.nome
 
     def criar_usuario(self):
-        pass
+        """
+        Cria um novo usuário no sistema.
+        """
+        self.save()
 
     def excluir_usuario(self):
-        pass
+        """
+        Exclui o usuário do sistema.
+        """
+        self.delete()
 
 
 class Movimentacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
-    data_hora = models.DateTimeField()
+    data_hora = models.DateTimeField(default=timezone.now)
 
     def movimentar_produto(self):
-        pass
+        """
+        Registra uma movimentação de produto no sistema.
+        """
+        # Atualiza a quantidade de produto no estoque
+        self.produto.qttd_estoque += self.quantidade
+        self.produto.save()
+        # Salva a movimentação
+        self.save()
 
     def obter_relatorio(self):
-        pass
+        """
+        Gera um relatório das movimentações de produtos.
+
+        :return: QuerySet contendo todas as movimentações.
+        """
+        return Movimentacao.objects.all()
 
 
 class PrevisaoEscassez(models.Model):
@@ -69,7 +135,17 @@ class PrevisaoEscassez(models.Model):
     data_escassez = models.DateField()
 
     def obter_previsao(self):
-        pass
+        """
+        Obtém a previsão de escassez do produto.
+
+        :return: Data prevista para a escassez do produto.
+        """
+        # Essa variável vai receber a média de vendas de um determinado produto por dia.
+        taxa_consumo_diario = 80  # Exemplo: 80 unidade por dia
+        dias_restantes = self.produto.qttd_estoque / taxa_consumo_diario
+        self.data_escassez = timezone.now().date() + timezone.timedelta(days=dias_restantes)
+        self.save()
+        return self.data_escassez
 
 
 class Aviso(models.Model):
@@ -77,7 +153,11 @@ class Aviso(models.Model):
     previsao_escassez = models.ForeignKey(PrevisaoEscassez, on_delete=models.CASCADE)
     tipo = models.CharField(max_length=100)
     texto = models.TextField()
-    data_aviso = models.DateField()
+    data_aviso = models.DateField(default=timezone.now)
 
     def enviar_aviso(self):
-        pass
+        """
+        Envia um aviso sobre a previsão de escassez do produto.
+        """
+        # Lógica de envio de aviso (por exemplo, enviar um e-mail ou notificação)
+        print(f"Aviso: {self.tipo} - {self.texto}")
